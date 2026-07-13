@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feliz Aniversário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine: #2b0f1a;
+    --plum: #3d1526;
+    --gold: #c9a13b;
+    --blush: #f2d9c4;
+    --cream: #f7ece0;
+    --rose: #7a3b4e;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--wine);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, .display{
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  /* ---------- LOGIN ---------- */
+
+  #login-screen{
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 50% 30%, var(--plum) 0%, var(--wine) 70%);
+    padding: 24px;
+    text-align: center;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+  }
+
+  #login-screen.hidden{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .crown{
+    width: 64px;
+    height: auto;
+    margin: 0 auto 16px auto;
+    display: block;
+    filter: drop-shadow(0 6px 14px rgba(201,161,59,0.45));
+    animation: crownGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes crownGlow{
+    0%, 100% { filter: drop-shadow(0 6px 14px rgba(201,161,59,0.45)); }
+    50% { filter: drop-shadow(0 6px 22px rgba(201,161,59,0.8)); }
+  }
+
+  .login-photo{
+    width: clamp(140px, 40vw, 190px);
+    height: clamp(140px, 40vw, 190px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 0 6px rgba(201,161,59,0.12), 0 12px 30px rgba(0,0,0,0.4);
+    margin-bottom: 22px;
+    margin-top: 28px;
+  }
+
+  .login-eyebrow{
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  #login-screen h1{
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 26px;
+  }
+
+  #login-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  #access-code{
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(242,217,196,0.4);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px 6px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  #access-code:focus{
+    border-color: var(--gold);
+  }
+
+  #access-code::placeholder{
+    color: rgba(242,217,196,0.4);
+  }
+
+  #login-btn{
+    margin-top: 8px;
+    padding: 12px 38px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #login-btn:hover{
+    background: var(--gold);
+    color: var(--wine);
+  }
+
+  #login-error{
+    font-size: 13px;
+    color: #e0a8a8;
+    height: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  #login-error.show{ opacity: 1; }
+
+  .shake{
+    animation: shake 0.45s ease;
+  }
+
+  @keyframes shake{
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  /* ---------- MAIN PAGE ---------- */
+
+  #main-page{
+    display: none;
+  }
+
+  #main-page.visible{
+    display: block;
+  }
+
+  /* floating audio control */
+  #audio-control{
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(43,15,26,0.55);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(201,161,59,0.35);
+    border-radius: 30px;
+    padding: 8px 16px 8px 8px;
+  }
+
+  #audio-toggle{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gold);
+    color: var(--wine);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  #audio-label{
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--blush);
+    text-transform: uppercase;
+  }
+
+  .bars{
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+  }
+
+  .bars span{
+    width: 2px;
+    background: var(--gold);
+    display: block;
+    border-radius: 1px;
+    animation: bar 1s ease-in-out infinite;
+  }
+
+  .bars span:nth-child(1){ animation-delay: 0s; }
+  .bars span:nth-child(2){ animation-delay: 0.2s; }
+  .bars span:nth-child(3){ animation-delay: 0.4s; }
+
+  @keyframes bar{
+    0%, 100% { height: 3px; }
+    50% { height: 12px; }
+  }
+
+  .bars.paused span{
+    animation-play-state: paused;
+    height: 3px;
+  }
+
+  /* hero */
+  .hero{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    position: relative;
+    background:
+      radial-gradient(circle at 50% 20%, rgba(201,161,59,0.12) 0%, transparent 55%),
+      var(--wine);
+  }
+
+  .hero-photo{
+    width: clamp(160px, 45vw, 220px);
+    height: clamp(160px, 45vw, 220px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 0 8px rgba(201,161,59,0.1), 0 20px 40px rgba(0,0,0,0.45);
+    margin-bottom: 28px;
+  }
+
+  .eyebrow{
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .hero h1{
+    font-size: clamp(40px, 9vw, 76px);
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.05;
+  }
+
+  .hero .subtitle{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(18px, 3vw, 24px);
+    color: var(--blush);
+    margin-top: 18px;
+  }
+
+  .hero .date{
+    margin-top: 22px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--rose);
+    text-transform: uppercase;
+  }
+
+  .scroll-hint{
+    position: absolute;
+    bottom: 34px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(242,217,196,0.5);
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scroll-hint .line{
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(var(--gold), transparent);
+    animation: scrollLine 1.8s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine{
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    50.01% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* pétalas caindo */
+  .petals{
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .petal{
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    background: var(--rose);
+    opacity: 0.55;
+    border-radius: 60% 0 60% 0;
+    animation: fall linear infinite, sway ease-in-out infinite;
+  }
+
+  @keyframes fall{
+    to { transform: translateY(110vh); }
+  }
+
+  @keyframes sway{
+    0%, 100% { margin-left: 0; }
+    50% { margin-left: 40px; }
+  }
+
+  /* contador de vida */
+  .counter{
+    padding: 90px 24px;
+    text-align: center;
+    background: var(--plum);
+  }
+
+  .counter-eyebrow{
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 30px;
+  }
+
+  .counter-grid{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .counter-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 74px;
+  }
+
+  .counter-item span{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 5vw, 44px);
+    font-weight: 600;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .counter-item small{
+    margin-top: 4px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blush);
+  }
+
+  .counter-caption{
+    margin-top: 30px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--blush);
+  }
+
+  /* intro message */
+  .intro{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 100px 28px;
+    text-align: center;
+  }
+
+  .intro p{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.6;
+    color: var(--blush);
+  }
+
+  /* moments gallery — linha do tempo em zigue-zague */
+  .gallery{
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 20px;
+  }
+
+  .gallery::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    background: linear-gradient(var(--wine) 0%, var(--gold) 8%, var(--gold) 92%, var(--wine) 100%);
+    opacity: 0.4;
+  }
+
+  .gallery-label{
+    text-align: center;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold);
+    padding-bottom: 60px;
+  }
+
+  .moment{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 68px 1fr;
+    align-items: center;
+    column-gap: 28px;
+    min-height: 68vh;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .moment.in-view{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .moment-right{ direction: rtl; }
+  .moment-right > *{ direction: ltr; }
+
+  .moment-visual{
+    grid-column: 1;
+    position: relative;
+    justify-self: end;
+    --rot: -4deg;
+    --py: 0px;
+    transform: rotate(var(--rot)) translateY(var(--py));
+    transition: transform 0.4s ease;
+    will-change: transform;
+  }
+
+  .moment:nth-child(even) .moment-visual{ --rot: 3deg; }
+
+  .moment-right .moment-visual{
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  .moment-visual:hover{
+    --rot: 0deg;
+  }
+
+  .moment-photo{
+    display: block;
+    width: 280px;
+    max-width: 100%;
+    height: 340px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 8px solid var(--cream);
+    border-bottom-width: 42px;
+    box-shadow: 0 26px 46px rgba(0,0,0,0.5);
+  }
+
+  .tape{
+    position: absolute;
+    width: 70px;
+    height: 24px;
+    background: rgba(242,217,196,0.55);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index: 2;
+  }
+
+  .tape-a{
+    top: -12px;
+    left: -18px;
+    transform: rotate(-38deg);
+  }
+
+  .tape-b{
+    bottom: 26px;
+    right: -20px;
+    transform: rotate(42deg);
+    background: rgba(201,161,59,0.45);
+  }
+
+  .moment-dot{
+    grid-column: 2;
+    justify-self: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--wine);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 6px var(--wine);
+    z-index: 3;
+  }
+
+  .moment-text{
+    grid-column: 3;
+    justify-self: start;
+    text-align: left;
+    max-width: 340px;
+  }
+
+  .moment-right .moment-text{
+    grid-column: 1;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .quote-mark{
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 46px;
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+
+  .moment-right .quote-mark{ transform: scaleX(-1); }
+
+  .moment-caption{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(19px, 2.4vw, 25px);
+    color: var(--blush);
+    line-height: 1.5;
+  }
+
+  .moment-date{
+    display: block;
+    margin-top: 10px;
+    font-family: 'Jost', sans-serif;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--rose);
+  }
+
+  @media (max-width: 720px){
+    .gallery::before{ left: 34px; }
+
+    .moment, .moment-right{
+      direction: ltr;
+      grid-template-columns: 68px 1fr;
+      column-gap: 18px;
+      min-height: unset;
+      padding-bottom: 54px;
+    }
+
+    .moment-dot{ grid-column: 1; grid-row: 1; }
+
+    .moment-visual, .moment-right .moment-visual{
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: start;
+    }
+
+    .moment-text, .moment-right .moment-text{
+      grid-column: 2;
+      grid-row: 2;
+      justify-self: start;
+      text-align: left;
+      max-width: 100%;
+      margin-top: 20px;
+    }
+
+    .moment-right .quote-mark{ transform: none; }
+
+    .moment-photo{ width: 220px; height: 260px; }
+  }
+
+  /* closing */
+  .closing{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    background: linear-gradient(180deg, var(--wine) 0%, var(--plum) 100%);
+  }
+
+  .closing .display{
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 500;
+    margin-bottom: 22px;
+  }
+
+  .closing p{
+    max-width: 560px;
+    font-size: clamp(16px, 2.2vw, 19px);
+    line-height: 1.7;
+    color: var(--blush);
+    margin-bottom: 34px;
+  }
+
+  .closing .signature{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--gold);
+  }
+
+  .surprise-btn{
+    margin-top: 10px;
+    padding: 14px 30px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 13px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .surprise-btn:hover{
+    background: var(--gold);
+    color: var(--wine);
+  }
+
+  .surprise-message{
+    max-width: 480px;
+    margin-top: 22px;
+    padding: 22px 26px;
+    border: 1px solid rgba(201,161,59,0.35);
+    border-radius: 6px;
+    background: rgba(201,161,59,0.06);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--blush);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: max-height 0.6s ease, opacity 0.6s ease, padding 0.6s ease;
+  }
+
+  .surprise-message.open{
+    max-height: 300px;
+    opacity: 1;
+    padding: 22px 26px;
+    margin-bottom: 14px;
+  }
+
+  .share-btn{
+    display: inline-block;
+    margin-top: 30px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blush);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rose);
+    padding-bottom: 3px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .share-btn:hover{
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .signature-block{
+    margin-top: 56px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(242,217,196,0.15);
+  }
+
+  .signature-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-top: 4px;
+  }
+
+  .signature-to{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--blush);
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+
+  .signature-date{
+    margin-top: 14px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--rose);
+  }
+
+  .the-end{
+    margin-top: 50px;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  /* carrossel estilo PlayStation */
+  .carousel-section{
+    padding: 70px 0 90px;
+    background: var(--plum);
+    overflow: hidden;
+  }
+
+  .carousel-label{
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 40px;
+    padding: 0 24px;
+  }
+
+  .carousel-wrap{
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .carousel-track{
+    display: flex;
+    gap: 26px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 40px 50vw;
+    scrollbar-width: none;
+  }
+
+  .carousel-track::-webkit-scrollbar{ display: none; }
+
+  .carousel-item{
+    flex: 0 0 auto;
+    width: 190px;
+    height: 260px;
+    scroll-snap-align: center;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    transform: scale(0.78);
+    opacity: 0.55;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    cursor: zoom-in;
+  }
+
+  .carousel-item.is-active{
+    transform: scale(1.12);
+    opacity: 1;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.65), 0 0 0 3px var(--gold);
+  }
+
+  .carousel-item img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .carousel-arrow{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    background: rgba(43,15,26,0.7);
+    color: var(--gold);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .carousel-arrow:hover{
+    background: var(--gold);
+    color: var(--wine);
+  }
+
+  .carousel-arrow.left{ left: 16px; }
+  .carousel-arrow.right{ right: 16px; }
+
+  .carousel-hint{
+    text-align: center;
+    margin-top: 26px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(242,217,196,0.5);
+  }
+
+  @media (max-width: 600px){
+    .carousel-item{ width: 150px; height: 210px; }
+    .carousel-track{ padding: 30px 25vw; gap: 18px; }
+    .carousel-arrow{ width: 36px; height: 36px; font-size: 16px; }
+  }
+
+  /* lightbox */
+  #lightbox{
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(20,7,12,0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+  }
+
+  #lightbox.open{
+    display: flex;
+  }
+
+  #lightbox img{
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border: 8px solid var(--cream);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  }
+
+  #lightbox-close{
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: none;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .lightbox-nav{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(43,15,26,0.6);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .lightbox-nav:hover{
+    background: var(--gold);
+    color: var(--wine);
+  }
+
+  .lightbox-nav.left{ left: 18px; }
+  .lightbox-nav.right{ right: 18px; }
+
+  @media (max-width: 600px){
+    .lightbox-nav{ width: 38px; height: 38px; font-size: 18px; }
+    .lightbox-nav.left{ left: 8px; }
+    .lightbox-nav.right{ right: 8px; }
+  }
+
+  /* barra de progresso */
+  #progress-bar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--gold);
+    z-index: 150;
+    transition: width 0.1s linear;
+  }
+
+  @media (max-width: 480px){
+    #audio-control{ top: 16px; right: 16px; padding: 6px 12px 6px 6px; }
+    .moment-photo{ border-bottom-width: 34px; }
+    .counter-grid{ gap: 14px; }
+    .counter-item{ min-width: 60px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== TELA DE LOGIN ===================== -->
+  <div id="login-screen">
+    <svg class="crown" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="crownGold" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#f5dfa0"/>
+          <stop offset="55%" stop-color="#c9a13b"/>
+          <stop offset="100%" stop-color="#a97f26"/>
+        </linearGradient>
+      </defs>
+      <path d="M8 60 L4 24 L24 40 L34 12 L50 32 L66 12 L76 40 L96 24 L92 60 Z"
+            fill="url(#crownGold)" stroke="#8a651c" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="6" y="58" width="88" height="9" rx="2" fill="url(#crownGold)" stroke="#8a651c" stroke-width="1.5"/>
+      <circle cx="50" cy="26" r="4.5" fill="#f7ece0"/>
+      <circle cx="24" cy="34" r="3.5" fill="#f2d9c4"/>
+      <circle cx="76" cy="34" r="3.5" fill="#f2d9c4"/>
+    </svg>
+    <!-- ✏️ Substitua pela foto de perfil da pessoa -->
+    <img class="login-photo" src="imagens/perfil.jpeg" alt="Foto de perfil">
+    <div class="login-eyebrow">A senha é a sua Data de nascimento</div>
+    <h1>Melhor Mãe do Mundo</h1>
+    <form id="login-form">
+      <input type="password" id="access-code" placeholder="Digite o código de acesso" autocomplete="off">
+      <button type="submit" id="login-btn">Entrar</button>
+      <div id="login-error">Código incorreto. Tente novamente.</div>
+    </form>
+  </div>
+
+  <!-- ===================== PÁGINA PRINCIPAL ===================== -->
+  <div id="main-page">
+
+    <div id="audio-control">
+      <button id="audio-toggle">▶</button>
+      <div class="bars paused"><span></span><span></span><span></span></div>
+      <span id="audio-label">Ouvir mensagem</span>
+    </div>
+
+    <!-- ✏️ Substitua pelo áudio com a sua mensagem de voz -->
+    <audio id="bg-audio" loop preload="auto">
+      <source src="audio/WhatsApp Ptt 2026-07-12 at 23.34.33.ogg" type="audio/mpeg">
+    </audio>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="petals" id="petals"></div>
+      <!-- ✏️ Substitua pela foto de perfil / foto principal -->
+      <img class="hero-photo" src="imagens/perfil.jpeg" alt="Foto de perfil">
+      <div class="eyebrow">Este é o seu presente</div>
+      <h1>Feliz Aniversário Mãe</h1>
+      <div class="subtitle"></div>
+      <div class="date">11 de Julho de 2026</div>
+      <div class="scroll-hint">
+        <span>role para ver</span>
+        <div class="line"></div>
+      </div>
+    </section>
+
+    <!-- CONTADOR DE VIDA -->
+    <section class="counter">
+      <div class="counter-eyebrow">Desde 11 de julho de 1969</div>
+      <div class="counter-grid">
+        <div class="counter-item"><span id="c-years">0</span><small>anos</small></div>
+        <div class="counter-item"><span id="c-days">0</span><small>dias</small></div>
+        <div class="counter-item"><span id="c-hours">0</span><small>horas</small></div>
+        <div class="counter-item"><span id="c-mins">0</span><small>min</small></div>
+        <div class="counter-item"><span id="c-secs">0</span><small>seg</small></div>
+      </div>
+      <p class="counter-caption">...iluminando tudo à sua volta.</p>
+    </section>
+
+    <!-- MENSAGEM INTRODUTÓRIA -->
+    <section class="intro">
+      <!-- ✏️ Substitua pelo texto de introdução que preferir -->
+      <p>Enquanto você lê estas palavras, quero que escute o que tenho para te dizer. Preparei aqui alguns dos momentos que guardo com mais carinho — e uma mensagem, na minha própria voz, sobre o quanto você significa para mim.</p>
+    </section>
+
+    <!-- GALERIA DE MOMENTOS — linha do tempo em zigue-zague -->
+    <div class="gallery">
+      <div class="gallery-label">Momentos que guardo com carinho</div>
+
+      <!-- ✏️ Duplique um bloco <div class="moment ...">...</div> para cada foto/momento novo.
+           Alterne a classe "moment-left" / "moment-right" para manter o efeito de zigue-zague,
+           e troque o numeral romano (I, II, III...) e a legenda de cada um. -->
+      <div class="moment moment-left">
+        <div class="moment-visual">
+          <span class="tape tape-a"></span>
+          <span class="tape tape-b"></span>
+          <img class="moment-photo" src="imagens/1.png" alt="Momento 1" data-lightbox>
+        </div>
+        <div class="moment-dot">I</div>
+        <div class="moment-text">
+          <span class="quote-mark">“</span>
+          <p class="moment-caption">Inesquecivel</p>
+          <span class="moment-date">Verão💛</span>
+        </div>
+      </div>
+
+      <div class="moment moment-right">
+        <div class="moment-visual">
+          <span class="tape tape-a"></span>
+          <span class="tape tape-b"></span>
+          <img class="moment-photo" src="imagens/2.jpeg" alt="Momento 2" data-lightbox>
+        </div>
+        <div class="moment-dot">II</div>
+        <div class="moment-text">
+          <span class="quote-mark">“</span>
+          <p class="moment-caption">Seu Orgulho</p>
+          <span class="moment-date">Seus Filhos 💛</span>
+        </div>
+      </div>
+
+      <div class="moment moment-left">
+        <div class="moment-visual">
+          <span class="tape tape-a"></span>
+          <span class="tape tape-b"></span>
+          <img class="moment-photo" src="imagens/3.jpeg" alt="Momento 3" data-lightbox>
+        </div>
+        <div class="moment-dot">III</div>
+        <div class="moment-text">
+          <span class="quote-mark">“</span>
+          <p class="moment-caption">Familia</p>
+          <span class="moment-date">Praia 💛</span>
+        </div>
+      </div>
+
+      <div class="moment moment-right">
+        <div class="moment-visual">
+          <span class="tape tape-a"></span>
+          <span class="tape tape-b"></span>
+          <img class="moment-photo" src="imagens/4.jpeg" alt="Momento 4" data-lightbox>
+        </div>
+        <div class="moment-dot">IV</div>
+        <div class="moment-text">
+          <span class="quote-mark">“</span>
+          <p class="moment-caption">Inesquecivel</p>
+          <span class="moment-date">Um dia especial 💛</span>
+        </div>
+      </div>
+
+      <div class="moment moment-left">
+        <div class="moment-visual">
+          <span class="tape tape-a"></span>
+          <span class="tape tape-b"></span>
+          <img class="moment-photo" src="imagens/5.jpeg" alt="Momento 5" data-lightbox>
+        </div>
+        <div class="moment-dot">V</div>
+        <div class="moment-text">
+          <span class="quote-mark">“</span>
+          <p class="moment-caption">Momento Especial</p>
+          <span class="moment-date">Casamento</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIS FOTOS — carrossel estilo PlayStation -->
+    <section class="carousel-section">
+      <div class="carousel-label">Mais alguns cliques guardados</div>
+      <div class="carousel-wrap">
+        <button class="carousel-arrow left" id="car-prev" aria-label="Anterior">‹</button>
+        <div class="carousel-track" id="carousel-track">
+          <!-- ✏️ Duplique um bloco <div class="carousel-item">...</div> para cada foto extra -->
+          <div class="carousel-item"><img src="imagens/6.jpeg" alt="Momento Especial" data-lightbox></div>
+          <div class="carousel-item"><img src="imagens/7.jpeg" alt="Momento Especial" data-lightbox></div>
+          <div class="carousel-item"><img src="imagens/8.jpeg" alt="Momento Especial" data-lightbox></div>
+          <div class="carousel-item"><img src="imagens/9.jpeg" alt="Momento Especial" data-lightbox></div>
+          <div class="carousel-item"><img src="imagens/10.jpeg" alt="Momento Especial" data-lightbox></div>
+          <div class="carousel-item"><img src="imagens/11.jpeg" alt="Momento Especial" data-lightbox></div>
+          <div class="carousel-item"><img src="imagens/13.jpg" alt="Momento Especial" data-lightbox></div>
+        <div class="carousel-item"><img src="imagens/14.jpg" alt="Momento Especial" data-lightbox></div>
+      </div>
+        <button class="carousel-arrow right" id="car-next" aria-label="Próxima">›</button>
+      </div>
+      <div class="carousel-hint">clique numa foto para ampliar</div>
+    </section>
+
+    <!-- MENSAGEM FINAL -->
+    <section class="closing">
+      <div class="display">Feliz Aniversário,  Mãe</div>
+      <p>Feliz aniversário, mãe! ❤️🎉
+
+Hoje é um dia muito especial, porque celebramos a sua vida. Agradeço a Deus por me ter dado o privilégio de ser sua filha e por ter uma mãe tão forte, amorosa e dedicada.
+
+Obrigada por tudo o que faz por nós, pelos ensinamentos, pelos sacrifícios, pelo carinho e por nunca deixar de acreditar na nossa felicidade. O seu amor é um dos maiores presentes que a vida me deu.
+
+Peço a Deus que continue a abençoá-la com muita saúde, paz, força, sabedoria e muitos anos de vida. Que Nossa Senhora a cubra com o seu manto e a proteja em todos os momentos.
+
+Que este novo ciclo seja repleto de alegrias, realizações, bênçãos e muito amor. Nunca se esqueça de que é profundamente amada e admirada.
+
+Feliz aniversário, minha mãe! Que Deus continue a guiá-la e a iluminar o seu caminho. Amo-a infinitamente. ❤️🎂</p>
+
+<p>ass.: Náyra da Conceição Lázaro Massango</p>
+
+      <button id="surprise-btn" class="surprise-btn">✦ Abrir um presente surpresa ✦</button>
+      <!-- ✏️ Substitua por uma mensagem escondida especial -->
+      <div id="surprise-message" class="surprise-message">
+       Feliz aniversário, mãe! ❤️🎉
+
+Tia Techa, a senhora é um exemplo de mãe. Mesmo sem a conhecer profundamente, admiro a forma como educou os seus filhos. Eles são disciplinados, inteligentes, carismáticos, solidários e tementes a Deus, o que reflete o amor e os valores que lhes transmitiu.
+
+Também agradeço pelo carinho e pela forma calorosa como sempre me recebeu.
+
+Feliz aniversário, Tia! 🎂 Que Deus continue a abençoá-la com muita saúde, paz, alegria e muitos anos de vida. 🙏❤️
+
+    <p>Assin: Milton</p>
+</div>
+
+      <a id="share-btn" class="share-btn" href="#" target="_blank" rel="noopener">Compartilhar esta página</a>
+
+      <div class="signature-block">
+        <div class="signature">Com todo o meu carinho,</div>
+        <div class="signature-name">Naira da Conceição</div>
+        <div class="signature-to">para Mana Bonita</div>
+        <div class="signature-date">Escrito com carinho em 10 de julho de 2026</div>
+      </div>
+
+      <div class="the-end">◆ fim ◆</div>
+    </section>
+
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox">
+    <button id="lightbox-prev" class="lightbox-nav left" aria-label="Foto anterior">‹</button>
+    <img id="lightbox-img" src="" alt="">
+    <button id="lightbox-next" class="lightbox-nav right" aria-label="Próxima foto">›</button>
+    <button id="lightbox-close">✕</button>
+  </div>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div id="progress-bar"></div>
+
+<script>
+  // ---------- LOGIN ----------
+  const ACCESS_CODE = "11/07/1969"; // ✏️ Altere aqui se quiser trocar o código de acesso
+
+  const loginScreen = document.getElementById('login-screen');
+  const mainPage = document.getElementById('main-page');
+  const loginForm = document.getElementById('login-form');
+  const accessInput = document.getElementById('access-code');
+  const loginError = document.getElementById('login-error');
+
+  loginForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const typed = accessInput.value.trim().toLowerCase();
+
+    if (typed === ACCESS_CODE.toLowerCase()) {
+      loginScreen.classList.add('hidden');
+      mainPage.classList.add('visible');
+      document.body.style.overflow = 'auto';
+      window.scrollTo(0, 0);
+    } else {
+      loginError.classList.add('show');
+      loginForm.classList.add('shake');
+      setTimeout(() => loginForm.classList.remove('shake'), 450);
+      accessInput.value = '';
+    }
+  });
+
+  // trava o scroll da página principal até o login
+  document.body.style.overflow = 'hidden';
+
+  // ---------- ÁUDIO ----------
+  const audio = document.getElementById('bg-audio');
+  const audioToggle = document.getElementById('audio-toggle');
+  const audioLabel = document.getElementById('audio-label');
+  const bars = document.querySelector('.bars');
+  let playing = false;
+
+  audioToggle.addEventListener('click', function(){
+    if (!playing) {
+      audio.play().catch(() => {});
+      audioToggle.textContent = '❚❚';
+      audioLabel.textContent = 'Tocando';
+      bars.classList.remove('paused');
+      playing = true;
+    } else {
+      audio.pause();
+      audioToggle.textContent = '▶';
+      audioLabel.textContent = 'Ouvir mensagem';
+      bars.classList.add('paused');
+      playing = false;
+    }
+  });
+
+  // ---------- REVELAÇÃO DAS FOTOS AO ROLAR ----------
+  const moments = document.querySelectorAll('.moment');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  moments.forEach(m => observer.observe(m));
+
+  // ---------- PARALLAX SUAVE NAS FOTOS ----------
+  const visuals = document.querySelectorAll('.moment-visual');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ticking = false;
+
+  function updateParallax(){
+    const vh = window.innerHeight;
+    visuals.forEach(v => {
+      const rect = v.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const distFromCenter = (center - vh / 2) / vh; // ~ -0.5 a 0.5
+      const offset = distFromCenter * 26; // pixels de deslocamento
+      v.style.setProperty('--py', offset.toFixed(1) + 'px');
+    });
+    ticking = false;
+  }
+
+  function onScroll(){
+    if (!ticking && !reduceMotion) {
+      window.requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  if (!reduceMotion) updateParallax();
+
+  // ---------- PÉTALAS CAINDO ----------
+  const petalsContainer = document.getElementById('petals');
+
+  function spawnPetal(){
+    if (!petalsContainer || reduceMotion) return;
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    const left = Math.random() * 100;
+    const duration = 8 + Math.random() * 6;
+    const swayDuration = 3 + Math.random() * 2;
+    const size = 8 + Math.random() * 6;
+    petal.style.left = left + '%';
+    petal.style.width = size + 'px';
+    petal.style.height = (size * 1.4) + 'px';
+    petal.style.animationDuration = duration + 's, ' + swayDuration + 's';
+    petal.style.opacity = (0.3 + Math.random() * 0.4).toFixed(2);
+    petalsContainer.appendChild(petal);
+    setTimeout(() => petal.remove(), duration * 1000);
+  }
+
+  if (!reduceMotion) {
+    for (let i = 0; i < 8; i++) setTimeout(spawnPetal, i * 700);
+    setInterval(spawnPetal, 900);
+  }
+
+  // ---------- CONTADOR DE VIDA ----------
+  const BIRTH_DATE = new Date('1969-07-11T00:00:00');;
+
+  function updateCounter(){
+    const now = new Date();
+    let diffMs = now - BIRTH_DATE;
+    if (diffMs < 0) diffMs = 0;
+
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const years = now.getFullYear() - BIRTH_DATE.getFullYear() -
+      ((now.getMonth() < BIRTH_DATE.getMonth() ||
+        (now.getMonth() === BIRTH_DATE.getMonth() && now.getDate() < BIRTH_DATE.getDate())) ? 1 : 0);
+
+    const lastAnniversary = new Date(BIRTH_DATE);
+    lastAnniversary.setFullYear(BIRTH_DATE.getFullYear() + years);
+    const msSinceAnniversary = now - lastAnniversary;
+    const days = Math.floor(msSinceAnniversary / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((msSinceAnniversary / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((msSinceAnniversary / (1000 * 60)) % 60);
+    const secs = Math.floor((msSinceAnniversary / 1000) % 60);
+
+    document.getElementById('c-years').textContent = years;
+    document.getElementById('c-days').textContent = days;
+    document.getElementById('c-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('c-mins').textContent = String(mins).padStart(2, '0');
+    document.getElementById('c-secs').textContent = String(secs).padStart(2, '0');
+  }
+
+  updateCounter();
+  setInterval(updateCounter, 1000);
+
+  // ---------- LIGHTBOX ----------
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+
+  const lightboxImages = Array.from(document.querySelectorAll('[data-lightbox]'));
+  let currentIndex = 0;
+
+  function openLightboxAt(index){
+    currentIndex = (index + lightboxImages.length) % lightboxImages.length;
+    const img = lightboxImages[currentIndex];
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('open');
+  }
+
+  lightboxImages.forEach((img, index) => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => openLightboxAt(index));
+  });
+
+  function closeLightbox(){ lightbox.classList.remove('open'); }
+  function showPrev(){ openLightboxAt(currentIndex - 1); }
+  function showNext(){ openLightboxAt(currentIndex + 1); }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', showPrev);
+  lightboxNext.addEventListener('click', showNext);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showPrev();
+    if (e.key === 'ArrowRight') showNext();
+  });
+
+  // ---------- CARROSSEL ESTILO PLAYSTATION ----------
+  const carTrack = document.getElementById('carousel-track');
+  const carPrev = document.getElementById('car-prev');
+  const carNext = document.getElementById('car-next');
+
+  if (carTrack) {
+    const carItems = Array.from(carTrack.querySelectorAll('.carousel-item'));
+    let carTicking = false;
+
+    function updateCarouselScale(){
+      const trackRect = carTrack.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      let closest = null;
+      let closestDist = Infinity;
+
+      carItems.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        const itemCenter = rect.left + rect.width / 2;
+        const dist = Math.abs(itemCenter - center);
+        item.classList.remove('is-active');
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = item;
+        }
+      });
+
+      if (closest) closest.classList.add('is-active');
+      carTicking = false;
+    }
+
+    function onCarScroll(){
+      if (!carTicking) {
+        window.requestAnimationFrame(updateCarouselScale);
+        carTicking = true;
+      }
+    }
+
+    carTrack.addEventListener('scroll', onCarScroll, { passive: true });
+    window.addEventListener('resize', onCarScroll);
+    updateCarouselScale();
+
+    function scrollByItem(direction){
+      const item = carItems[0];
+      const gap = 26;
+      const distance = (item.getBoundingClientRect().width + gap) * direction;
+      carTrack.scrollBy({ left: distance, behavior: 'smooth' });
+    }
+
+    carPrev.addEventListener('click', () => scrollByItem(-1));
+    carNext.addEventListener('click', () => scrollByItem(1));
+  }
+
+  // ---------- PRESENTE SURPRESA ----------
+  const surpriseBtn = document.getElementById('surprise-btn');
+  const surpriseMessage = document.getElementById('surprise-message');
+
+  surpriseBtn.addEventListener('click', () => {
+    const isOpen = surpriseMessage.classList.toggle('open');
+    surpriseBtn.textContent = isOpen ? '✦ Fechar ✦' : '✦ Abrir um presente surpresa ✦';
+  });
+
+  // ---------- COMPARTILHAR ----------
+  const shareBtn = document.getElementById('share-btn');
+  const shareText = encodeURIComponent('Preparei uma página especial de aniversário para você: ' + window.location.href);
+  shareBtn.href = 'https://wa.me/?text=' + shareText;
+
+  // ---------- BARRA DE PROGRESSO DE LEITURA ----------
+  const progressBar = document.getElementById('progress-bar');
+
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>
+
+</body>
+</html>
