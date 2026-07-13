@@ -1434,10 +1434,15 @@ Feliz aniversário, Tia! 🎂 Que Deus continue a abençoá-la com muita saúde,
   const surpriseBtn = document.getElementById('surprise-btn');
   const surpriseMessage = document.getElementById('surprise-message');
 
-  surpriseBtn.addEventListener('click', () => {
-    const isOpen = surpriseMessage.classList.toggle('open');
-    surpriseBtn.textContent = isOpen ? '✦ Fechar ✦' : '✦ Abrir um presente surpresa ✦';
-  });
+ surpriseBtn.addEventListener('click', () => {
+  const isOpen = surpriseMessage.classList.toggle('open');
+  if (isOpen) {
+    surpriseMessage.style.maxHeight = surpriseMessage.scrollHeight + 'px';
+  } else {
+    surpriseMessage.style.maxHeight = null;
+  }
+  surpriseBtn.textContent = isOpen ? '✦ Fechar ✦' : '✦ Abrir um presente surpresa ✦';
+});
 
   // ---------- COMPARTILHAR ----------
   const shareBtn = document.getElementById('share-btn');
